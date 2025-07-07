@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  redis-cache:
+    image: redis:alpine
+    restart: always
+
+  mariadb:
+    image: mariadb:10.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: erpnext
+      MYSQL_USER: frappe
+      MYSQL_PASSWORD: frappe
+
+  site:
+    image: frappe/erpnext-worker:version-14
+    depends_on:
+      - redis-cache
+      - mariadb
+    environment:
+      DB_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      SITE_NAME: site1.local
+      DB_NAME: erpnext
+      ADMIN_PASSWORD: admin
+      INSTALL_APPS: erpnext
+    ports:
+      - "8000:8000"
