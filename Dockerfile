@@ -9,5 +9,7 @@ COPY entrypoint.sh /entrypoint.sh
 # Çalıştırılabilir yap
 RUN chmod +x /entrypoint.sh
 
+RUN ls -la /
+
 # Giriş noktası olarak scripti kullan
 ENTRYPOINT ["/entrypoint.sh"]
