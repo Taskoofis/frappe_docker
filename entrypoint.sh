@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# Yeni site varsa kurulum yap
-if [ ! -f "/home/frappe/frappe-bench/sites/site1.local/site_config.json" ]; then
+# Gerekli path ayarları
+cd /home/frappe/frappe-bench
+
+# Eğer site yoksa oluştur
+if [ ! -f "sites/site1.local/site_config.json" ]; then
   echo "Yeni ERPNext sitesi kuruluyor..."
 
   bench new-site site1.local \
