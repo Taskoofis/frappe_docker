@@ -1,12 +1,9 @@
 FROM frappe/erpnext-worker:v14
 
-USER root
-
 WORKDIR /home/frappe/frappe-bench
 
 COPY entrypoint.sh /entrypoint.sh
+COPY apps.txt /home/frappe/frappe-bench/apps.txt
 RUN chmod +x /entrypoint.sh
-
-USER frappe
 
 ENTRYPOINT ["/entrypoint.sh"]
