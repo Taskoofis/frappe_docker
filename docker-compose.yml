@@ -15,7 +15,6 @@ services:
       MYSQL_PASSWORD: frappe
 
   site:
-    image: frappe/erpnext-worker:version-14
     depends_on:
       - redis-cache
       - mariadb
