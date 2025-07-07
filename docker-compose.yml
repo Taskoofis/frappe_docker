@@ -22,13 +22,10 @@ services:
       MYSQL_USER: frappe
       MYSQL_PASSWORD: frappe
 
-  site-creator:
+  site:
     image: frappe/erpnext-worker:v14
-    command: new
     depends_on:
       - redis-cache
-      - redis-queue
-      - redis-socketio
       - mariadb
     environment:
       DB_ROOT_USER: root
@@ -37,8 +34,9 @@ services:
       DB_NAME: erpnext
       ADMIN_PASSWORD: admin
       INSTALL_APPS: erpnext
-    volumes:
-      - sites-vol:/home/frappe/frappe-bench/sites
+    ports:
+      - "8000:8000"
+    entrypoint: ["/entrypoint.sh"]
 
   backend:
     image: frappe/erpnext-worker:v14
