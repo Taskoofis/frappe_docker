@@ -1,10 +1,5 @@
-# Frappe için temel image
-FROM frappe/erpnext-worker:version-14
+# Frappe için temel imaj
+FROM frappe/erpnext-worker:v14
 
-# Çalışma dizinini ayarla
+# Çalışma dizinini ayarla (isteğe bağlı)
 WORKDIR /home/frappe/frappe-bench
-
-# Portu dışa aç
-EXPOSE 8000
-
-CMD ["bench", "start"]
