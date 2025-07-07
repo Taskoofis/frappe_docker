@@ -5,6 +5,14 @@ services:
     image: redis:alpine
     restart: always
 
+  redis-queue:
+    image: redis:alpine
+    restart: always
+
+  redis-socketio:
+    image: redis:alpine
+    restart: always
+
   mariadb:
     image: mariadb:10.6
     restart: always
@@ -14,10 +22,13 @@ services:
       MYSQL_USER: frappe
       MYSQL_PASSWORD: frappe
 
-  site:
+  site-creator:
     image: frappe/erpnext-worker:v14
+    command: new
     depends_on:
       - redis-cache
+      - redis-queue
+      - redis-socketio
       - mariadb
     environment:
       DB_ROOT_USER: root
@@ -26,19 +37,47 @@ services:
       DB_NAME: erpnext
       ADMIN_PASSWORD: admin
       INSTALL_APPS: erpnext
-    ports:
-      - "8000:8000"
+    volumes:
+      - sites-vol:/home/frappe/frappe-bench/sites
 
-  schedule:
-    image: frappe/erpnext-schedule:v14
+  backend:
+    image: frappe/erpnext-worker:v14
     restart: always
     depends_on:
-      - site
+      - redis-cache
+      - redis-queue
+      - redis-socketio
+      - mariadb
+    volumes:
+      - sites-vol:/home/frappe/frappe-bench/sites
 
-  nginx:
+  frontend:
     image: frappe/erpnext-nginx:v14
     restart: always
-    ports:
-      - "80:80"
     depends_on:
-      - site
+      - backend
+    ports:
+      - "8000:80"
+    volumes:
+      - sites-vol:/home/frappe/frappe-bench/sites
+
+  scheduler:
+    image: frappe/erpnext-worker:v14
+    restart: always
+    command: schedule
+    depends_on:
+      - backend
+    volumes:
+      - sites-vol:/home/frappe/frappe-bench/sites
+
+  worker:
+    image: frappe/erpnext-worker:v14
+    restart: always
+    command: worker
+    depends_on:
+      - backend
+    volumes:
+      - sites-vol:/home/frappe/frappe-bench/sites
+
+volumes:
+  sites-vol:
