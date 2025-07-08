@@ -13,11 +13,12 @@ if [ ! -f "$SITE_CONFIG_PATH" ]; then
     echo "Creating a new ERPNext site: site1.local"
     echo "Using MariaDB root password: root"
     echo "Using Admin password: admin"
-    echo "Installing ERPNext application..."
+    echo "Installing ERPNext application from apps.txt..."
 
-    # Run bench new-site command with specified parameters
+    # Run bench new-site command with specified parameters.
     # The --mariadb-root-password and --admin-password are provided for automated setup.
     # The --install-app erpnext ensures the ERPNext application is installed on the new site.
+    # We are explicitly installing 'erpnext' as requested, though apps.txt could be used for multiple.
     bench new-site site1.local \
         --mariadb-root-password root \
         --admin-password admin \

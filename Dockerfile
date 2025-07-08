@@ -6,6 +6,10 @@ FROM frappe/erpnext-worker:v14
 # The base image typically sets this, but being explicit ensures consistency.
 WORKDIR /home/frappe/frappe-bench
 
+# Copy the apps.txt file which lists the apps to be installed.
+# This is a common practice for Frappe deployments.
+COPY apps.txt /home/frappe/frappe-bench/apps.txt
+
 # Copy your entrypoint.sh script into a common executable path inside the container.
 # Ensure entrypoint.sh is in the same directory as your Dockerfile.
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
