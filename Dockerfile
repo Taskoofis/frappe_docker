@@ -78,5 +78,11 @@ EXPOSE 8000
 # entrypoint.sh betiği site oluşturma ve hizmetleri başlatma işlemlerini yönetecek.
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
+<<<<<<< HEAD
 # Kapsayıcı başlatıldığında varsayılan olarak çalışacak komut (ENTRYPOINT tarafından geçersiz kılınabilir)
 CMD ["bench", "start"]
+=======
+# Define the default command to run when the container starts.
+# This serves as a default argument to the ENTRYPOINT if no command is specified.
+CMD ["bench", "start"]
+>>>>>>> 80c329d680b03f47a2604dbf0e43bcf693622936

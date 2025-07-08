@@ -40,4 +40,8 @@ echo "bench start ile ERPNext hizmetleri başlatılıyor..."
 # Ana süreç ise, betikteki son komutun bu olması önemlidir.
 bench start
 
+<<<<<<< HEAD
 echo "ERPNext hizmetleri başlatıldı."
+=======
+echo "ERPNext services started."
+>>>>>>> 80c329d680b03f47a2604dbf0e43bcf693622936
