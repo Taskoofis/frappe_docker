@@ -16,7 +16,7 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Expose any necessary ports (e.g., for ERPNext web access)
-EXPOSE 8000 # Example port, adjust as per your ERPNext configuration
+EXPOSE 8000
 
 # Add any other necessary commands to install ERPNext dependencies,
 # bench, etc., before the entrypoint script runs.
