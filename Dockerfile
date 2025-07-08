@@ -1,30 +1,82 @@
-# Use the official Frappe/ERPNext worker image as the base.
-# This image already contains most of the necessary dependencies and the Frappe Bench environment.
-FROM frappe/erpnext-worker:v14
+# Ubuntu 22.04 LTS (Jammy Jellyfish) tabanlı bir imaj kullanın
+FROM ubuntu:22.04
 
-# Set the working directory to the Frappe bench home.
-# The base image typically sets this, but being explicit ensures consistency.
+# Ortam değişkenlerini ayarlayın (etkileşimli olmayan kurulumlar için)
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1
+
+# Gerekli sistem bağımlılıklarını kurun
+# Bu, Frappe Bench ve ERPNext'in çalışması için temel gereksinimleri sağlar.
+# build-essential: Derleme araçları
+# python3-dev, python3-pip, python3-setuptools, python3-wheel: Python geliştirme ve paket yönetimi
+# mariadb-client: MariaDB veritabanı ile iletişim için istemci araçları
+# redis-server: Redis önbellek sunucusu
+# git: Kaynak kod yönetimi
+# curl: URL'lerden veri transferi
+# nginx: Web sunucusu (isteğe bağlı, bench start ile gelir)
+# supervisor: Süreç yöneticisi (isteğe bağlı, bench start ile gelir)
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential \
+    python3-dev \
+    python3-pip \
+    python3-setuptools \
+    python3-wheel \
+    mariadb-client \
+    redis-server \
+    git \
+    curl \
+    nginx \
+    supervisor \
+    # wkhtmltopdf genellikle PDF oluşturmak için gereklidir.
+    # Doğrudan apt deposunda bulunmayabilir veya belirli bir sürüm gerekebilir.
+    # Basitlik için şimdilik dahil etmiyorum, ancak ihtiyacınız olursa ekleyebilirsiniz.
+    # Örneğin: RUN apt-get install -y wkhtmltopdf
+    && rm -rf /var/lib/apt/lists/*
+
+# Node.js ve Yarn'ı kurun (Frappe frontend varlıkları için gereklidir)
+# NodeSource'dan daha yeni bir Node.js sürümü almak için
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g yarn && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Frappe için özel bir kullanıcı oluşturun
+RUN useradd -m -s /bin/bash frappe
+
+# Frappe kullanıcısına geçin
+USER frappe
+
+# Çalışma dizinini Frappe kullanıcısının ana dizinine ayarlayın
+WORKDIR /home/frappe
+
+# Frappe Bench CLI'yı kurun
+RUN pip3 install frappe-bench
+
+# Yeni bir Frappe Bench başlatın. Bu, 'frappe-bench' dizinini oluşturur.
+RUN bench init frappe-bench
+
+# Çalışma dizinini yeni oluşturulan bench dizinine değiştirin
 WORKDIR /home/frappe/frappe-bench
 
-# Copy the apps.txt file which lists the apps to be installed.
-# This is a common practice for Frappe deployments.
+# apps.txt dosyasını kopyalayın
+# Bu dosya, bench new-site veya bench get-app komutları tarafından kullanılabilir.
 COPY apps.txt /home/frappe/frappe-bench/apps.txt
 
-# Copy your entrypoint.sh script into a common executable path inside the container.
-# Ensure entrypoint.sh is in the same directory as your Dockerfile.
+# entrypoint.sh betiğini kapsayıcıya kopyalayın
+# entrypoint.sh dosyasının Dockerfile ile aynı dizinde olduğundan emin olun.
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# Make the entrypoint script executable.
+# entrypoint betiğini çalıştırılabilir hale getirin
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Expose the default ERPNext port (8000).
-# This is crucial for accessing the ERPNext web interface.
+# Varsayılan ERPNext portunu (8000) dışarıya açın
 EXPOSE 8000
 
-# Define the entrypoint for your Docker container.
-# The entrypoint script will handle site creation (if needed) and starting ERPNext services.
+# Kapsayıcı başladığında çalışacak ana komutu tanımlayın
+# entrypoint.sh betiği site oluşturma ve hizmetleri başlatma işlemlerini yönetecek.
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-# Define the default command to run when the container starts.
-# This serves as a default argument to the ENTRYPOINT if no command is specified.
+# Kapsayıcı başlatıldığında varsayılan olarak çalışacak komut (ENTRYPOINT tarafından geçersiz kılınabilir)
 CMD ["bench", "start"]
