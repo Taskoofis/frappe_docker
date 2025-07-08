@@ -14,7 +14,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # git: Kaynak kod yönetimi
 # curl: URL'lerden veri transferi
 # nginx: Web sunucusu (isteğe bağlı, bench start ile gelir)
-# supervisor: Süreç yöneticisi (isteğe bağlı, bench start ile gelir)
+# supervisor: Süreç yöjesi (isteğe bağlı, bench start ile gelir)
 RUN apt-get update && \
     apt-get install -y \
     build-essential \
@@ -49,6 +49,11 @@ WORKDIR /home/frappe
 
 # Frappe Bench CLI'yı kurun
 RUN pip3 install frappe-bench
+
+# --- DÜZELTME: bench komutunun bulunabilmesi için PATH'e ekleme ---
+# pip tarafından yüklenen yürütülebilir dosyaların bulunduğu dizini PATH'e ekleyin.
+ENV PATH="/home/frappe/.local/bin:${PATH}"
+# --- DÜZELTME SONU ---
 
 # Yeni bir Frappe Bench başlatın. Bu, 'frappe-bench' dizinini oluşturur.
 RUN bench init frappe-bench
