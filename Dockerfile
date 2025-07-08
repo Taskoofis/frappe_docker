@@ -23,9 +23,9 @@ RUN apt-get update && \
     python3-venv \
     libssl-dev \
     libffi-dev \
-    libmysqlclient-dev \ # MySQL/MariaDB istemci kütüphanesi geliştirme dosyaları
-    pkg-config \         # Bazı kütüphaneleri derlemek için gerekli
-    g++ \                # C++ derleyicisinin olduğundan emin olun
+    libmysqlclient-dev \
+    pkg-config \         # Bu satır şimdi apt-get install'ın içinde
+    g++ \
     && rm -rf /var/lib/apt/lists/*
 
 # Node.js ve Yarn'ı kurun (Frappe frontend varlıkları için gereklidir)
