@@ -1,5 +1,5 @@
 # Use an appropriate base image for ERPNext, e.g., a Python or Ubuntu image
-FROM ubuntu:latest # Or a more specific ERPNext base image
+FROM frappe/erpnext-worker:v14
 
 # Set the working directory inside the container
 WORKDIR /home/frappe/frappe-bench
