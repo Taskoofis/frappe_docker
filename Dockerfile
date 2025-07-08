@@ -28,10 +28,6 @@ RUN apt-get update && \
     curl \
     nginx \
     supervisor \
-    # wkhtmltopdf genellikle PDF oluşturmak için gereklidir.
-    # Doğrudan apt deposunda bulunmayabilir veya belirli bir sürüm gerekebilir.
-    # Basitlik için şimdilik dahil etmiyorum, ancak ihtiyacınız olursa ekleyebilirsiniz.
-    # Örneğin: RUN apt-get install -y wkhtmltopdf
     && rm -rf /var/lib/apt/lists/*
 
 # Node.js ve Yarn'ı kurun (Frappe frontend varlıkları için gereklidir)
@@ -78,11 +74,5 @@ EXPOSE 8000
 # entrypoint.sh betiği site oluşturma ve hizmetleri başlatma işlemlerini yönetecek.
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-<<<<<<< HEAD
 # Kapsayıcı başlatıldığında varsayılan olarak çalışacak komut (ENTRYPOINT tarafından geçersiz kılınabilir)
 CMD ["bench", "start"]
-=======
-# Define the default command to run when the container starts.
-# This serves as a default argument to the ENTRYPOINT if no command is specified.
-CMD ["bench", "start"]
->>>>>>> 80c329d680b03f47a2604dbf0e43bcf693622936
