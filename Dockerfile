@@ -7,16 +7,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # Gerekli sistem bağımlılıklarını kurun
 # Bu, Frappe Bench ve ERPNext'in çalışması için temel gereksinimleri sağlar.
-# build-essential: Derleme araçları
-# python3-dev, python3-pip, python3-setuptools, python3-wheel: Python geliştirme ve paket yönetimi
-# mariadb-client: MariaDB veritabanı ile iletişim için istemci araçları
-# redis-server: Redis önbellek sunucusu
-# git: Kaynak kod yönetimi
-# curl: URL'lerden veri transferi
-# nginx: Web sunucusu (isteğe bağlı, bench start ile gelir)
-# supervisor: Süreç yöneticisi (isteğe bağlı, bench start ile gelir)
-# python3-venv: Python sanal ortamları oluşturmak için gereklidir
-# libssl-dev, libffi-dev: Python paketlerinin derlenmesi için gerekli olabilecek kütüphaneler
 RUN apt-get update && \
     apt-get install -y \
     build-essential \
@@ -33,11 +23,14 @@ RUN apt-get update && \
     python3-venv \
     libssl-dev \
     libffi-dev \
+    libmysqlclient-dev \ # MySQL/MariaDB istemci kütüphanesi geliştirme dosyaları
+    pkg-config \         # Bazı kütüphaneleri derlemek için gerekli
+    g++ \                # C++ derleyicisinin olduğundan emin olun
     && rm -rf /var/lib/apt/lists/*
 
 # Node.js ve Yarn'ı kurun (Frappe frontend varlıkları için gereklidir)
 # NodeSource'dan daha yeni bir Node.js sürümü almak için
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g yarn && \
     apt-get clean && \
