@@ -14,6 +14,12 @@ COPY apps.txt /home/frappe/frappe-bench/apps.txt
 # Ensure entrypoint.sh is in the same directory as your Dockerfile.
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
+# --- DEBUGGING STEP ---
+# This command will list the contents of /usr/local/bin/
+# If entrypoint.sh is not listed here, the COPY command failed or the file was not in the build context.
+RUN ls -l /usr/local/bin/
+# --- END DEBUGGING STEP ---
+
 # Make the entrypoint script executable.
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
