@@ -14,8 +14,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # git: Kaynak kod yönetimi
 # curl: URL'lerden veri transferi
 # nginx: Web sunucusu (isteğe bağlı, bench start ile gelir)
-# supervisor: Süreç yöjesi (isteğe bağlı, bench start ile gelir)
+# supervisor: Süreç yöneticisi (isteğe bağlı, bench start ile gelir)
 # python3-venv: Python sanal ortamları oluşturmak için gereklidir
+# libssl-dev, libffi-dev: Python paketlerinin derlenmesi için gerekli olabilecek kütüphaneler
 RUN apt-get update && \
     apt-get install -y \
     build-essential \
@@ -30,6 +31,8 @@ RUN apt-get update && \
     nginx \
     supervisor \
     python3-venv \
+    libssl-dev \
+    libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Node.js ve Yarn'ı kurun (Frappe frontend varlıkları için gereklidir)
@@ -48,6 +51,10 @@ USER frappe
 
 # Çalışma dizinini Frappe kullanıcısının ana dizinine ayarlayın
 WORKDIR /home/frappe
+
+# pip ve setuptools'u güncelleyin
+# Bu, Frappe Bench'in bağımlılıklarını kurarken oluşabilecek sorunları önleyebilir.
+RUN pip3 install --upgrade pip setuptools
 
 # Frappe Bench CLI'yı kurun
 RUN pip3 install frappe-bench
